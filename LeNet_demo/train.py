@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
-from model import modef
+from model import LeNet
 import torch.optim as optim
 import matplotlib.pyplot as plt
 import numpy as np
@@ -65,4 +65,33 @@ loss_fn = nn.CrossEntropyLoss()
 optimizer = optim.Adam(net.parameters(), lr = 0.001)
 epoches = 100 
 for epoch in range(epoches):
-    
+    running_loss = 0.0
+    #for 循环会遍历 trainloader 中的所有数据，并将每个 batch 数据赋值给变量 data，每个 batch 的大小是 batch_size，在这个例子中是 36。每个 batch 包含输入数据 inputs 和对应的标签 labels。
+    for step, data in enumerate(trainloader, 0):
+        #获取输入数据inputs和标签labels。
+        inputs ,labels = data
+        #将模型参数的梯度清零，通常在每个batch的训练开始之前调用。
+        optimizer.zero_grad()
+        outputs = net(inputs)
+        loss = loss_function(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        running_loss += loss.item()
+        #在每个epoch中，每训练完500个batch，使用当前模型对test_image进行预测，并计算模型的准确率accuracy。
+        if step % 500 ==499:
+            with torch.no_grad():
+                outputs = net(test_image)
+                predict_y = torch.max(outputs, dim = 1)[1]
+                accuracy = (predict_y == test_label).sum().item() / test_label.size(0)
+                print('[%d, %5d] loss: %.3f, acc: %.3f' % (epoch + 1, step + 1, running_loss / 500, accuracy))
+                running_loss = 0.0
+
+print('Finished Training')    
+save_path = './cifar10_lenet.pth'
+torch.save(net.state_dict(), save_path)
+
+'''如果当前脚本作为主程序运行，那么执行 main() 函数；如果当前脚本被作为模块导入其他脚本中，
+那么不执行 main() 函数。这样做的目的是为了让模块导入时不会自动执行脚本中的代码，而只有在该脚本被作为主程序运行时才会执行其中的代码。'''
+
+if __name__ == '__main__':
+    main()
