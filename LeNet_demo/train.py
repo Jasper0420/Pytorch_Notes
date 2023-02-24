@@ -35,7 +35,7 @@ testset = torchvision.datasets.CIFAR10(
     root='./data', train=False, download=False, transform=transform)
 
 testloader = torch.utils.data.Dataloader(
-    testset, batch_size = 10000, shuffle = False, num_workers = 0)
+    testset, batch_size = 4, shuffle = False, num_workers = 0)
 
 '''将testloader作为参数传入iter()函数，创建一个可迭代的对象test_data_iter。然后，通过next()方法获取这个可迭代对象的下一个元素，
 即一个batch的数据和标签。这个batch的数据和标签将被分别赋值给test_image和test_label两个变量。
@@ -63,4 +63,6 @@ print(' '.join('%5s' % classes[test_label[j]] for j in range(36)))
 net = LeNet() 
 loss_fn = nn.CrossEntropyLoss()
 optimizer = optim.Adam(net.parameters(), lr = 0.001)
-
+epoches = 100 
+for epoch in range(epoches):
+    
