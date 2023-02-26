@@ -83,6 +83,7 @@ for epoch in range(epoches):
                 outputs = net(test_image)
                 predict_y = torch.max(outputs, dim = 1)[1]
                 accuracy = (predict_y == test_label).sum().item() / test_label.size(0)
+                #%d和%5d分别表示一个整数和一个宽度为5的整数，.3f表示一个保留3位小数的浮点数。最终输出的字符串的格式为[轮数, 步数] loss: 累积损失值, accuracy: 准确率。
                 print('[%d, %5d] loss: %.3f, acc: %.3f' % (epoch + 1, step + 1, running_loss / 500, accuracy))
                 running_loss = 0.0
 
